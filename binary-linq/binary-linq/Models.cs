@@ -9,12 +9,12 @@ namespace binary_linq
         public string Year { get; set; }
         public string City { get; set; }
         public string Univercity { get; set; }
-        public string Category { get; set; }
+        public Category Category { get; set; }
     }
     public class Test
     {
         public string Name { get; set; }
-        public string Category { get; set; }
+        public Category Category { get; set; }
         public List<Question> Questions { get; set; }
         public int MaxPassTime { get; set; }
         public int PassMark { get; set; }
@@ -22,7 +22,7 @@ namespace binary_linq
     public class Question
     {
         public string Text { get; set; }
-        public string Category { get; set; }
+        public Category Category { get; set; }
     }
     public class TestWork
     {
@@ -31,4 +31,9 @@ namespace binary_linq
         public int Result { get; set; }
         public int PassTime { get; set; }
     }
+    public class Category
+    {
+        public string Name { get; set; }
+    }
+
 }
