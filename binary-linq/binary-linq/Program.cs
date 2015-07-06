@@ -194,45 +194,52 @@ namespace binary_linq
             };
 #endregion
 
+            //complex if we have ids
             var passedUsers = users.SelectMany(c => testWorks, (c, o) => new {c, o})
                 .Where(t => t.o.User.Name == t.c.Name && t.o.Result >= tests.First(n => n.Name == t.o.Test.Name).PassMark)
                 .Select(t => new
                 {
-                    User = t.o.User,
+                    User = t.o.User.Name,
                     Result = t.o.Result
                 }).ToList();
 
-            var passedInTimeUsers = users.SelectMany(c => testWorks, (c, o) => new {c, o})
-                .Where(t => t.o.User.Name == t.c.Name && t.o.Result >= tests.First(n => n.Name == t.o.Test.Name).PassMark && t.o.PassTime <= tests.First(n => n.Name == t.o.Test.Name).MaxPassTime)
-                .Select(t => new
-                {
-                    User = t.o.User,
-                    Result = t.o.Result
-                }).ToList();
+            //simple
+            var passedUsers2 = testWorks.Where(n=>n.Result >= n.Test.PassMark).Select(t => new
+            {
+                User = t.User.Name,
+                Result = t.Result
+            }).ToList();
+            
 
-            var passedOutTimeUsers = users.SelectMany(c => testWorks, (c, o) => new {c, o})
-                .Where(t => t.o.User.Name == t.c.Name && t.o.Result >= tests.First(n => n.Name == t.o.Test.Name).PassMark && t.o.PassTime > tests.First(n => n.Name == t.o.Test.Name).MaxPassTime)
-                .Select(t => new
-                {
-                    User = t.o.User,
-                    Result = t.o.Result
-                }).ToList();
+            //simple
+            var passedInTimeUsers = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime <= n.Test.MaxPassTime).Select(t => new
+            {
+                User = t.User.Name,
+                Result = t.Result
+            }).ToList();
+
+            var passedOutTimeUsers = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime > n.Test.MaxPassTime).Select(t => new
+            {
+                User = t.User.Name,
+                Result = t.Result
+            }).ToList();
 
             var usersByCity =
-                users.GroupBy(n => n.City)
-                    .Select(n => new {City = n.Key, Users = n.Where(m => m.City == n.Key).ToList()})
+                users.GroupBy(n => n.City, (m, k) => new {City = m, User = k.ToList()})
                     .ToList();
 
 
-            var passedUsersByCity = users.SelectMany(c => testWorks, (c, o) => new {c, o})
-                .Where(
-                    t => t.o.User.Name == t.c.Name && t.o.Result >= tests.First(n => n.Name == t.o.Test.Name).PassMark)
-                .GroupBy(n => n.c.City, n => n.c.Name, (key, g) => new
-                {
-                    City = key,
-                    Users = g.ToList()
-                }).ToList();
 
+            var passedUsersByCity2 = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime <= n.Test.MaxPassTime).Select(t => new
+            {
+                User = t.User.Name,
+                City = t.User.City,
+                Result = t.Result
+            }).GroupBy(n => n.City, (key, g) => new
+            {
+                City = key,
+                Users = g.ToList()
+            }).ToList();
 
             var resultsForUsers =
                 testWorks.Select(
