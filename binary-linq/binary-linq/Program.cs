@@ -204,32 +204,33 @@ namespace binary_linq
                 }).ToList();
 
             //simple
+            //Список людей, которые прошли тесты.
             var passedUsers2 = testWorks.Where(n=>n.Result >= n.Test.PassMark).Select(t => new
             {
                 User = t.User.Name,
                 Result = t.Result
             }).ToList();
-            
 
-            //simple
+            //Список тех, кто прошли тесты успешно и уложилися во время.
             var passedInTimeUsers = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime <= n.Test.MaxPassTime).Select(t => new
             {
                 User = t.User.Name,
                 Result = t.Result
             }).ToList();
 
+            //Список людей, которые прошли тесты успешно и не уложились во время
             var passedOutTimeUsers = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime > n.Test.MaxPassTime).Select(t => new
             {
                 User = t.User.Name,
                 Result = t.Result
             }).ToList();
 
+            //Список студентов по городам. (Из Львова: 10 студентов, из Киева: 20)
             var usersByCity =
                 users.GroupBy(n => n.City, (m, k) => new {City = m, User = k.ToList()})
                     .ToList();
 
-
-
+            //Список успешных студентов по городам.
             var passedUsersByCity2 = testWorks.Where(n => n.Result >= n.Test.PassMark && n.PassTime <= n.Test.MaxPassTime).Select(t => new
             {
                 User = t.User.Name,
@@ -241,6 +242,7 @@ namespace binary_linq
                 Users = g.ToList()
             }).ToList();
 
+            //Результат для каждого студента - его баллы, время, баллы в процентах для каждой категории.
             var resultsForUsers =
                 testWorks.Select(
                     n =>
